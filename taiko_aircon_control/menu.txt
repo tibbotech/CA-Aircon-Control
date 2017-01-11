@@ -1,0 +1,39 @@
+Acc	Men	Item	Item				Item
+lvl	lvl	type	String				Data
+
+>>0	0	N	Password				S,I,PW,,B,6,N
+>>0	0	F	Ethernet...				^
+>>0	1	N	DHCP					S,L,DH,0-Disabled;1-Enabled;
+>>0	1	N	IP-address				S,I,IP,   .   .   .   ,D,12,N
+>>0	1	N	Gateway IP				S,I,GI,   .   .   .   ,D,12,N
+>>0	1	N	Subnet mask				S,I,NM,   .   .   .   ,D,12,N
+>>0	0	F	Wi-Fi...				^
+>>0	1	N	Wi-Fi mode				S,L,WE,0-Disabled;1-Enabled (on demand);2-Enabled (permanently);
+>>0	1	N	DHCP					S,L,WD,0-Disabled;1-Enabled;
+>>0	1	N	IP-address				S,I,WI,   .   .   .   ,D,12,N
+>>0	1	N	Gateway IP				S,I,WG,   .   .   .   ,D,12,N
+>>0	1	N	Subnet mask					S,I,WN,   .   .   .   ,D,12,N
+>>0	1	N	Access point (SSID)		S,I,WA,,B,22,N
+>>0	1	N	AP security mode		S,L,WS,0-Disabled;1-WEP64;2-WEP128;3-WPA-PSK (TKIP);4-WPA2-PSK (AES);
+>>0	1	N	AP password				S,I,WP,,B,26,Y
+>>0	0	F	AggreGate...			^
+>>0	1	N	Server connection		S,L,AR,0-Disabled;1-Enabled;
+>>0	1	N	Owner name				S,I,ON,,B,32,N
+>>0	1	N	Device name 			S,I,DN,,B,32,N
+>>0	1	N	Server IP				S,I,TI,,D,15,N
+>>0	1	N	Server port				S,I,TP,,D,5,N
+>>0	1	N	Connection timeout 		S,I,CT,,D,3,N
+>>0	0	F	SNTP (time server)...	^
+>>0	1	N	Enable/disable			S,L,TE,0-Disabled;1-Enabled;
+>>0	1	N	Time server IP			S,I,TS,   .   .   .   ,D,12,N
+>>0	1	N	Time zone				S,L,TZ,0--12;1--11;2--10;3--9;4--8;5--7;6--6;7--5;8--4:30;9--4;10--3;11--3:30;12--2;13--1;14-0;15-+1;16-+2;17-+3;18-+3:30;19-+4;20-+4:30;21-+5;22-+5:30;23-+5:45;24-+6;25-+6:30;26-+7;27-+8;28-+9;29-+9:30;30-+10;31-+11;32-+12;33-+13;
+>>0	1	N	Daylight saving time	S,L,DS,0-Off;1-On;
+>>0	1	N	Date (dd/mm/yyyy)		S,I,TD,    -  -  ,D,8,N
+>>0	1	N	Time (hh:mm)			S,I,TT,  :  :  ,D,6,N
+>>0	0	F	IR commands...			^
+>>0	1	N	'On' command		S,C,IRO
+>>0	1	N	'Off' command		S,C,IOF
+>>0	0	N	Target temperature (C)	S,I,AT,,D,2,N
+>>0	0	N	Pre-cool start time		S,I,ST,  :  ,D,4,N
+>>0	0	N	Brightness threshold	S,I,LT,,D,3,N
+>>0	0	N	Temp. meas. adjustment	S,L,TA,0--5;1--4;2--3;3--2;4--1;5- 0;6- 1;7- 2;8- 3;9- 4;10- 5;

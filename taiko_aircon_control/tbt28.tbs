@@ -1,0 +1,151 @@
+'***********************************************************************************************************
+'			Tibbit #28 (ambient light sensor)
+'***********************************************************************************************************
+
+include "global.tbh"
+
+'--------------------------------------------------------------------
+#define DELAY_50MS (106)
+
+const BH_INIT_SIGNATURE=&h5982
+const BH_STAMP="BH> "
+const BH_CR_LF=chr(13)+chr(10)
+
+const BH_1721_WRITE_CODE=&h46			' Manufacturer address code for write
+const BH_1721_READ_CODE=&h47			' Manufacturer address code for read
+
+'--------------------------------------------------------------------
+const BH_CMD_POWER_DOWN		=&h00
+const BH_CMD_POWER_ON		=&h01
+const BH_CMD_AUTO_RESOL_0	=&h10
+'const BH_CMD_AUTO_RESOL_1	=&h20
+const BH_CMD_HRESOL_0		=&h12
+'const BH_CMD_HRESOL_1		=&h22
+const BH_CMD_LRESOL_0		=&h13
+'const BH_CMD_LRESOL_1		=&h16
+'const BH_CMD_LRESOL_2		=&h23
+'const BH_CMD_LRESOL_3		=&h26
+
+enum bh_mode
+	BH_MODE_AUTO_RESOL=0,
+	BH_MODE_HIGH_RESOL=1,
+	BH_MODE_LOW_RESOL=2	
+end enum
+
+'--------------------------------------------------------------------
+declare sub bh_send_cmd(cmd as byte)
+declare sub bh_delay_msecond(value as word)
+
+#if BH_DEBUG_PRINT=1
+declare sub bh_debug_print(data as string)
+#endif
+
+'--------------------------------------------------------------------
+dim i2c_num_tbt28 as byte
+dim bh_init_flag as word
+
+'====================================================================
+function tbt28_init(use_ssi as no_yes)as ok_ng
+'Call this function to initialize the Tibbit.
+'Use_ssi argument specifies whether you want to communicate with this Tibbit using the SSI channel running in the I2C mode (YES), or
+'go for direct I/O manipulation a.k.a. bit-banging (NO).
+'Note that there is a limited number of SSI channels so if you set use_ssi=YES this function may return NG, meaning that
+'there are no free SSI channels left. This doesn't mean failure. Rather, it means that comms will proceed in bit banging mood.
+	
+	tbt28_init=OK
+	bh_init_flag=BH_INIT_SIGNATURE
+
+	#if BH_DEBUG_PRINT=1
+		bh_debug_print("++++++++++")
+		bh_debug_print("mode:"+str(mode))
+	#endif
+
+	i2c_num_tbt28=si2c_register("TBT28", TBT28_DATA_PIN, TBT28_CLK_PIN, use_ssi)
+	#if BH_DEBUG_PRINT=1
+		bh_debug_print("i2c num:"+str(i2c_num_tbt28))
+	#endif
+	
+	si2c_get(i2c_num_tbt28)
+
+	if i2c_num_tbt28<=3 then
+		ssi.channel=i2c_num_tbt28
+		ssi.enabled=NO
+		ssi.baudrate=1
+		ssi.clkmap=TBT28_CLK_PIN
+		ssi.dimap=TBT28_DATA_PIN
+		ssi.domap=TBT28_DATA_PIN
+		ssi.direction=PL_SSI_DIRECTION_LEFT
+		ssi.zmode=PL_SSI_ZMODE_ENABLED_ON_ZERO
+		ssi.mode=PL_SSI_MODE_0
+		ssi.enabled=YES
+	else
+		if use_ssi=YES then
+			tbt28_init=NG
+		end if
+	end if
+
+	'Switch sensor to power down mode
+	bh_send_cmd(BH_CMD_POWER_DOWN)
+
+	'Switch sensor to power on mode
+	bh_send_cmd(BH_CMD_POWER_ON)
+
+	'Switch sensor to high resolution mode
+	bh_send_cmd(BH_CMD_HRESOL_0)
+
+	'Wait to complete 1st Auto-resolution mode measurement.(max. 180 ms)
+	bh_delay_msecond(DELAY_50MS+DELAY_50MS+DELAY_50MS)
+
+	#if BH_DEBUG_PRINT=1
+		bh_debug_print("----------")
+	#endif
+end function
+
+function tbt28_get() as word
+'Returns a 16-bit number expressing relative ambient light intensity.
+
+	dim upper,lower as byte
+	
+	tbt28_get=0
+	if bh_init_flag<> BH_INIT_SIGNATURE then
+	#if BH_DEBUG_PRINT=1
+		bh_debug_print("The lib is not initialized, call tbt28_init() first")
+	#endif
+		exit function
+	end if
+
+	si2c_get(i2c_num_tbt28)
+
+	si2c_start()
+	si2c_write(BH_1721_READ_CODE)
+	upper=si2c_read(true)
+	lower=si2c_read(false)
+	si2c_stop()
+
+	#if BH_DEBUG_PRINT=1
+		bh_debug_print("u:"+hex(upper)+" l:"+hex(lower))
+	#endif
+	tbt28_get=upper*256+lower
+end function
+
+sub bh_send_cmd(cmd as byte)
+	si2c_start()
+	si2c_write(BH_1721_WRITE_CODE)
+	si2c_write(cmd)
+	si2c_stop()
+end sub
+
+sub bh_delay_msecond(value as word)
+	dim ax,bx as word
+
+	for ax=0 to value
+		for bx=0 to 5
+		next bx
+	next ax
+end sub
+
+#if BH_DEBUG_PRINT=1
+sub bh_debug_print(data as string)
+	sys.debugprint(BH_STAMP+data+BH_CR_LF)
+end sub
+#endif

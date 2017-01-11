@@ -1,0 +1,22 @@
+enum ac_control_type
+	AC_AUTO,
+	AC_MANUAL,
+	AC_PRE_COOL
+end enum
+
+declare sub boot()
+#if SUPPORTS_DISPLAY
+declare sub print_main_screen()
+declare sub print_time()
+declare sub kp_init()
+declare sub print_current_temp()
+declare sub print_target_temp()
+declare sub print_start_time()
+declare sub print_light_level()
+
+#endif
+
+declare current_temp as byte
+declare target_temp as byte
+declare on_temp, off_temp as real
+declare ac_control_method as ac_control_type

@@ -1,0 +1,10 @@
+#ifndef TBT28_CLK_PIN
+	#define TBT28_CLK_PIN PL_IO_NULL
+#endif
+
+#ifndef TBT28_DATA_PIN
+	#define TBT28_DATA_PIN PL_IO_NULL
+#endif
+
+declare function tbt28_init(use_ssi as no_yes)as ok_ng
+declare function tbt28_get() as word
