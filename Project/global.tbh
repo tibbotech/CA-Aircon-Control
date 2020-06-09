@@ -263,7 +263,7 @@ include "login_control.tbh"
 	include "html_session.tbh"
 #endif
 
-include "super_i2c.tbh"
+include "super_i2c\trunk\super_i2c.tbh"
 include "ssi\trunk\ssi.tbh"
 
 include "boot.tbh"
