@@ -72,7 +72,7 @@ function tbt26_init()as tbt26_errcheck
 	ssi.domap=TBT26_SPI_MOSI
 	ssi.zmode=PL_SSI_ZMODE_ALWAYS_ENABLED
 	ssi.direction=PL_SSI_DIRECTION_LEFT
-	ssi.baudrate=1
+	ssi.baudrate=PL_SSI_BAUDRATES_100kHz
 		
 
 	ssi.enabled=NO

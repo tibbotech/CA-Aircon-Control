@@ -69,7 +69,7 @@ function tbt29_init(use_ssi as no_yes) as tbt29_errcheck
 	if i2c_num_tbt29 <4 then
 		ssi.channel=i2c_num_tbt29
 		ssi.enabled=NO
-		ssi.baudrate=10
+		ssi.baudrate=PL_SSI_BAUDRATES_400kHz
 		ssi.clkmap=TBT29_CLK_PIN
 		ssi.dimap=TBT29_DATA_PIN
 		ssi.domap=TBT29_DATA_PIN
